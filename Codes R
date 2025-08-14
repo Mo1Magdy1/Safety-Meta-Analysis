@@ -1,0 +1,389 @@
+library(meta)
+library(metafor)
+
+# Phase 1: Total non-serious A/E
+# Create a dataframe with the data from the table
+data <- data.frame(
+  Trial = c("Kiyosue (2013)", "Morrow (2012)", "Norjavaara (2012)", "Wilding (2013)",
+            "NCT00817778", "NCT00856908", "D1020C00001", "D1020C00003", "D1020C00004",
+            "D1020C00014", "D1020C00015", "D1020C00026", "D1020C00027", "D1020C00028",
+            "D1020C00030", "D1020C00031", "D1020C00032", "D1020C00044"),
+  Treatment_Events = c(51, 28, 13, 97, 15, 13, 0, 2, 5, 15, 0, 16, 2, 3, 0, 2, 0, 6),
+  Treatment_Total = c(169, 39, 13, 343, 19, 15, 21, 30, 18, 22, 17, 16, 12, 24, 12, 20, 12, 18),
+  Placebo_Events = c(16, 27, 11, 14, 7, 3, 0, 2, 0, 6, 0, 1, 1, 5, 0, 0, 6, 1),
+  Placebo_Total = c(55, 37, 13, 87, 8, 5, 7, 6, 6, 8, 9, 5, 12, 24, 12, 20, 12, 6)
+)
+
+# Fixed-effect meta-analysis with Relative Risk
+meta_analysis <- metabin(
+  event.e = Treatment_Events,
+  n.e     = Treatment_Total,
+  event.c = Placebo_Events,
+  n.c     = Placebo_Total,
+  studlab = Trial,
+  data    = data,
+  sm      = "RR",               # Relative Risk
+  method  = "Inverse",          # Inverse variance method
+  common  = TRUE,               # Fixed-effect model
+  random  = FALSE,              # No random effects
+  method.random.ci = "classic"  # Classical inverse variance
+)
+
+# Print the summary of the meta-analysis
+print(meta_analysis)
+summary(meta_analysis)
+
+# Plot the meta-analysis results with custom colors
+forest(meta_analysis,
+       col.square = "red",        # Change squares to red
+       col.diamond = "yellow",    # Change diamond to yellow
+       col.diamond.lines = "black", # Outline diamond with black
+       col.square.lines = "black",  # Outline squares with black
+       col.label.left = "blue",   # Left side labels in blue
+       col.label.right = "blue"   # Right side labels in blue
+)
+
+# Funnel Plot to asses Publication Bias
+
+# Funnel plot (only for studies with effect sizes)
+funnel(meta_analysis,
+       xlab = "Relative Risk",
+       ylab = "Standard Error")
+
+# Phase 2: Hypoglycemia
+# Create a dataframe with the data from the table
+data <- data.frame(
+  Trial = c("Kiyosue (2013)", "Morrow 2012", "Norjavaara 2012", "Wilding (2013)",
+            "NCT00817778", "NCT00856908", "D1020C00001", "D1020C00003", "D1020C00004",
+            "D1020C00010", "D1020C00014", "D1020C00015", "D1020C00027", "D1020C00028",
+            "D1020C00030", "D1020C00031", "D1020C00032", "D1020C00044"),
+  Treatment_Events = c(0, 4, 0, 0, 9, 2, 0, 0, 3, 2, 2, 0, 0, 2, 0, 1, 0, 3),
+  Treatment_Total = c(169, 39, 12, 343, 19, 15, 21, 30, 18, 11, 22, 17, 12, 24, 12, 20, 12, 18),
+  Placebo_Events = c(0, 4, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  Placebo_Total = c(55, 37, 12, 87, 8, 5, 7, 6, 6, 11, 8, 9, 12, 24, 12, 20, 12, 6)
+)
+
+# Perform the meta-analysis using a fixed-effect model with Relative Risk
+meta_analysis <- metabin(
+  event.e = Treatment_Events,
+  n.e = Treatment_Total,
+  event.c = Placebo_Events,
+  n.c = Placebo_Total,
+  studlab = Trial,
+  data = data,
+  sm = "RR",   # Relative Risk
+  method = "Inverse",  # Fixed effect model using inverse variance method
+  common = TRUE,
+  random = FALSE,
+  method.random.ci = "classic"  # Use classical inverse variance method
+)
+
+# Print the summary of the meta-analysis
+summary(meta_analysis)
+
+# Plot the meta-analysis results with custom colors
+forest(meta_analysis,
+       col.square = "red",        # Change squares to red
+       col.diamond = "yellow",    # Change diamond to yellow
+       col.diamond.lines = "black", # Outline diamond with black
+       col.square.lines = "black",  # Outline squares with black
+       col.label.left = "blue",   # Left side labels in blue
+       col.label.right = "blue"   # Right side labels in blue
+)
+
+# Phase 3 Total Serious A/E
+# Create a dataframe with the data from the table
+data <- data.frame(
+  Trial = c("Kiyosue (2013)", "Morrow 2012", "Norjavaara 2012", "Wilding (2013)",
+            "NCT00817778", "NCT00856908", "D1020C00001", "D1020C00003", "D1020C00004",
+            "D1020C00010", "D1020C00014", "D1020C00015","D1020C00026" ,"D1020C00027",
+            "D1020C00028", "D1020C00030", "D1020C00031", "D1020C00032", "D1020C00044"),
+  Treatment_Events = c(0, 0, 0, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  Treatment_Total = c(169, 39, 12, 343, 19, 15, 21, 30, 18, 11, 22, 17, 16, 12, 24, 12, 20, 12, 18),
+  Placebo_Events = c(0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  Placebo_Total = c(55, 37, 12, 87, 8, 5, 7, 6, 6, 11, 8, 9, 5, 12, 24, 12, 20, 12, 6)
+)
+
+# Fixed-effect meta-analysis with Relative Risk
+meta_analysis <- metabin(
+  event.e = Treatment_Events,
+  n.e     = Treatment_Total,
+  event.c = Placebo_Events,
+  n.c     = Placebo_Total,
+  studlab = Trial,
+  data    = data,
+  sm      = "RR",               # Relative Risk
+  method  = "Inverse",          # Inverse variance method
+  common  = TRUE,               # Fixed-effect model
+  random  = FALSE,              # No random effects
+  method.random.ci = "classic"  # Classical inverse variance
+)
+
+# Print the summary of the meta-analysis
+print(meta_analysis)
+summary(meta_analysis)
+
+# Plot the meta-analysis results with custom colors
+forest(meta_analysis,
+       col.square = "red",        # Change squares to red
+       col.diamond = "yellow",    # Change diamond to yellow
+       col.diamond.lines = "black", # Outline diamond with black
+       col.square.lines = "black",  # Outline squares with black
+       col.label.left = "blue",   # Left side labels in blue
+       col.label.right = "blue"   # Right side labels in blue
+)
+
+# Phase 4 Sensitivity Analysis
+
+# Total non-serious A/E
+# Create a dataframe with the data from the table
+data <- data.frame(
+  Trial = c("Kiyosue (2013)", "Morrow (2012)", "Norjavaara (2012)", "Wilding (2013)",
+            "NCT00817778", "NCT00856908", "D1020C00001", "D1020C00003", "D1020C00004",
+            "D1020C00014", "D1020C00015", "D1020C00026", "D1020C00027", "D1020C00028",
+            "D1020C00030", "D1020C00031", "D1020C00032", "D1020C00044"),
+  Treatment_Events = c(51, 28, 13, 97, 15, 13, 0, 2, 5, 15, 0, 16, 2, 3, 0, 2, 0, 6),
+  Treatment_Total = c(169, 39, 13, 343, 19, 15, 21, 30, 18, 22, 17, 16, 12, 24, 12, 20, 12, 18),
+  Placebo_Events = c(16, 27, 11, 14, 7, 3, 0, 2, 0, 6, 0, 1, 1, 5, 0, 0, 6, 1),
+  Placebo_Total = c(55, 37, 13, 87, 8, 5, 7, 6, 6, 8, 9, 5, 12, 24, 12, 20, 12, 6)
+)
+
+# Fixed-effect meta-analysis with Relative Risk
+meta_analysis <- metabin(
+  event.e = Treatment_Events,
+  n.e     = Treatment_Total,
+  event.c = Placebo_Events,
+  n.c     = Placebo_Total,
+  studlab = Trial,
+  data    = data,
+  sm      = "OR",               # Relative Risk
+  method  = "Inverse",          # Inverse variance method
+  common  = TRUE,               # Fixed-effect model
+  random  = FALSE,              # No random effects
+  method.random.ci = "classic"  # Classical inverse variance
+)
+
+# Print the summary of the meta-analysis
+print(meta_analysis)
+summary(meta_analysis)
+
+# Plot the meta-analysis results with custom colors
+forest(meta_analysis,
+       col.square = "red",        # Change squares to red
+       col.diamond = "yellow",    # Change diamond to yellow
+       col.diamond.lines = "black", # Outline diamond with black
+       col.square.lines = "black",  # Outline squares with black
+       col.label.left = "blue",   # Left side labels in blue
+       col.label.right = "blue"   # Right side labels in blue
+)
+
+# Phase 2: Hypoglycemia
+# Create a dataframe with the data from the table
+data <- data.frame(
+  Trial = c("Kiyosue (2013)", "Morrow 2012", "Norjavaara 2012", "Wilding (2013)",
+            "NCT00817778", "NCT00856908", "D1020C00001", "D1020C00003", "D1020C00004",
+            "D1020C00010", "D1020C00014", "D1020C00015", "D1020C00027", "D1020C00028",
+            "D1020C00030", "D1020C00031", "D1020C00032", "D1020C00044"),
+  Treatment_Events = c(0, 4, 0, 0, 9, 2, 0, 0, 3, 2, 2, 0, 0, 2, 0, 1, 0, 3),
+  Treatment_Total = c(169, 39, 12, 343, 19, 15, 21, 30, 18, 11, 22, 17, 12, 24, 12, 20, 12, 18),
+  Placebo_Events = c(0, 4, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  Placebo_Total = c(55, 37, 12, 87, 8, 5, 7, 6, 6, 11, 8, 9, 12, 24, 12, 20, 12, 6)
+)
+
+# Perform the meta-analysis using a fixed-effect model with Relative Risk
+meta_analysis <- metabin(
+  event.e = Treatment_Events,
+  n.e = Treatment_Total,
+  event.c = Placebo_Events,
+  n.c = Placebo_Total,
+  studlab = Trial,
+  data = data,
+  sm = "OR",   # Relative Risk
+  method = "Inverse",  # Fixed effect model using inverse variance method
+  common = TRUE,
+  random = FALSE,
+  method.random.ci = "classic"  # Use classical inverse variance method
+)
+
+# Print the summary of the meta-analysis
+summary(meta_analysis)
+
+# Plot the meta-analysis results with custom colors
+forest(meta_analysis,
+       col.square = "red",        # Change squares to red
+       col.diamond = "yellow",    # Change diamond to yellow
+       col.diamond.lines = "black", # Outline diamond with black
+       col.square.lines = "black",  # Outline squares with black
+       col.label.left = "blue",   # Left side labels in blue
+       col.label.right = "blue"   # Right side labels in blue
+)
+
+# Phase 3 Total Serious A/E
+# Create a dataframe with the data from the table
+data <- data.frame(
+  Trial = c("Kiyosue (2013)", "Morrow 2012", "Norjavaara 2012", "Wilding (2013)",
+            "NCT00817778", "NCT00856908", "D1020C00001", "D1020C00003", "D1020C00004",
+            "D1020C00010", "D1020C00014", "D1020C00015","D1020C00026" ,"D1020C00027",
+            "D1020C00028", "D1020C00030", "D1020C00031", "D1020C00032", "D1020C00044"),
+  Treatment_Events = c(0, 0, 0, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  Treatment_Total = c(169, 39, 12, 343, 19, 15, 21, 30, 18, 11, 22, 17, 16, 12, 24, 12, 20, 12, 18),
+  Placebo_Events = c(0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  Placebo_Total = c(55, 37, 12, 87, 8, 5, 7, 6, 6, 11, 8, 9, 5, 12, 24, 12, 20, 12, 6)
+)
+
+# Fixed-effect meta-analysis with Relative Risk
+meta_analysis <- metabin(
+  event.e = Treatment_Events,
+  n.e     = Treatment_Total,
+  event.c = Placebo_Events,
+  n.c     = Placebo_Total,
+  studlab = Trial,
+  data    = data,
+  sm      = "OR",               # Relative Risk
+  method  = "Inverse",          # Inverse variance method
+  common  = TRUE,               # Fixed-effect model
+  random  = FALSE,              # No random effects
+  method.random.ci = "classic"  # Classical inverse variance
+)
+
+# Print the summary of the meta-analysis
+print(meta_analysis)
+summary(meta_analysis)
+
+# Plot the meta-analysis results with custom colors
+forest(meta_analysis,
+       col.square = "red",        # Change squares to red
+       col.diamond = "yellow",    # Change diamond to yellow
+       col.diamond.lines = "black", # Outline diamond with black
+       col.square.lines = "black",  # Outline squares with black
+       col.label.left = "blue",   # Left side labels in blue
+       col.label.right = "blue"   # Right side labels in blue
+)
+
+# Phase 4 Part 2: Changing from Fixed Effect to Random Effect
+
+# Total non-serious A/E
+# Create a dataframe with the data from the table
+data <- data.frame(
+  Trial = c("Kiyosue (2013)", "Morrow (2012)", "Norjavaara (2012)", "Wilding (2013)",
+            "NCT00817778", "NCT00856908", "D1020C00001", "D1020C00003", "D1020C00004",
+            "D1020C00014", "D1020C00015", "D1020C00026", "D1020C00027", "D1020C00028",
+            "D1020C00030", "D1020C00031", "D1020C00032", "D1020C00044"),
+  Treatment_Events = c(51, 28, 13, 97, 15, 13, 0, 2, 5, 15, 0, 16, 2, 3, 0, 2, 0, 6),
+  Treatment_Total = c(169, 39, 13, 343, 19, 15, 21, 30, 18, 22, 17, 16, 12, 24, 12, 20, 12, 18),
+  Placebo_Events = c(16, 27, 11, 14, 7, 3, 0, 2, 0, 6, 0, 1, 1, 5, 0, 0, 6, 1),
+  Placebo_Total = c(55, 37, 13, 87, 8, 5, 7, 6, 6, 8, 9, 5, 12, 24, 12, 20, 12, 6)
+)
+
+# Fixed-effect meta-analysis with Relative Risk
+meta_analysis <- metabin(
+  event.e = Treatment_Events,
+  n.e     = Treatment_Total,
+  event.c = Placebo_Events,
+  n.c     = Placebo_Total,
+  studlab = Trial,
+  data    = data,
+  sm      = "OR",               # Relative Risk
+  method  = "Inverse",          # Inverse variance method
+  common  = FALSE,               # Fixed-effect model
+  random  = TRUE,              # No random effects
+  method.random.ci = "classic"  # Classical inverse variance
+)
+
+# Print the summary of the meta-analysis
+print(meta_analysis)
+summary(meta_analysis)
+
+# Plot the meta-analysis results with custom colors
+forest(meta_analysis,
+       col.square = "red",        # Change squares to red
+       col.diamond = "yellow",    # Change diamond to yellow
+       col.diamond.lines = "black", # Outline diamond with black
+       col.square.lines = "black",  # Outline squares with black
+       col.label.left = "blue",   # Left side labels in blue
+       col.label.right = "blue"   # Right side labels in blue
+)
+
+# Hypoglycemia
+# Create a dataframe with the data from the table
+data <- data.frame(
+  Trial = c("Kiyosue (2013)", "Morrow 2012", "Norjavaara 2012", "Wilding (2013)",
+            "NCT00817778", "NCT00856908", "D1020C00001", "D1020C00003", "D1020C00004",
+            "D1020C00010", "D1020C00014", "D1020C00015", "D1020C00027", "D1020C00028",
+            "D1020C00030", "D1020C00031", "D1020C00032", "D1020C00044"),
+  Treatment_Events = c(0, 4, 0, 0, 9, 2, 0, 0, 3, 2, 2, 0, 0, 2, 0, 1, 0, 3),
+  Treatment_Total = c(169, 39, 12, 343, 19, 15, 21, 30, 18, 11, 22, 17, 12, 24, 12, 20, 12, 18),
+  Placebo_Events = c(0, 4, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  Placebo_Total = c(55, 37, 12, 87, 8, 5, 7, 6, 6, 11, 8, 9, 12, 24, 12, 20, 12, 6)
+)
+
+# Perform the meta-analysis using a fixed-effect model with Relative Risk
+meta_analysis <- metabin(
+  event.e = Treatment_Events,
+  n.e = Treatment_Total,
+  event.c = Placebo_Events,
+  n.c = Placebo_Total,
+  studlab = Trial,
+  data = data,
+  sm = "OR",   # Relative Risk
+  method = "Inverse",  # Fixed effect model using inverse variance method
+  common = FALSE,
+  random = TRUE,
+  method.random.ci = "classic"  # Use classical inverse variance method
+)
+
+# Print the summary of the meta-analysis
+summary(meta_analysis)
+
+# Plot the meta-analysis results with custom colors
+forest(meta_analysis,
+       col.square = "red",        # Change squares to red
+       col.diamond = "yellow",    # Change diamond to yellow
+       col.diamond.lines = "black", # Outline diamond with black
+       col.square.lines = "black",  # Outline squares with black
+       col.label.left = "blue",   # Left side labels in blue
+       col.label.right = "blue"   # Right side labels in blue
+)
+
+# Total Serious A/E
+# Create a dataframe with the data from the table
+data <- data.frame(
+  Trial = c("Kiyosue (2013)", "Morrow 2012", "Norjavaara 2012", "Wilding (2013)",
+            "NCT00817778", "NCT00856908", "D1020C00001", "D1020C00003", "D1020C00004",
+            "D1020C00010", "D1020C00014", "D1020C00015","D1020C00026" ,"D1020C00027",
+            "D1020C00028", "D1020C00030", "D1020C00031", "D1020C00032", "D1020C00044"),
+  Treatment_Events = c(0, 0, 0, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  Treatment_Total = c(169, 39, 12, 343, 19, 15, 21, 30, 18, 11, 22, 17, 16, 12, 24, 12, 20, 12, 18),
+  Placebo_Events = c(0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  Placebo_Total = c(55, 37, 12, 87, 8, 5, 7, 6, 6, 11, 8, 9, 5, 12, 24, 12, 20, 12, 6)
+)
+
+# Fixed-effect meta-analysis with Relative Risk
+meta_analysis <- metabin(
+  event.e = Treatment_Events,
+  n.e     = Treatment_Total,
+  event.c = Placebo_Events,
+  n.c     = Placebo_Total,
+  studlab = Trial,
+  data    = data,
+  sm      = "OR",               # Relative Risk
+  method  = "Inverse",          # Inverse variance method
+  common  = FALSE,               # Fixed-effect model
+  random  = TRUE,              # No random effects
+  method.random.ci = "classic"  # Classical inverse variance
+)
+
+# Print the summary of the meta-analysis
+print(meta_analysis)
+summary(meta_analysis)
+
+# Plot the meta-analysis results with custom colors
+forest(meta_analysis,
+       col.square = "red",        # Change squares to red
+       col.diamond = "yellow",    # Change diamond to yellow
+       col.diamond.lines = "black", # Outline diamond with black
+       col.square.lines = "black",  # Outline squares with black
+       col.label.left = "blue",   # Left side labels in blue
+       col.label.right = "blue"   # Right side labels in blue
+)
+
