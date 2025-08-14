@@ -33,5 +33,3 @@ The study followed **PRISMA guidelines**, with data extracted from eligible tria
 - **All analyses performed in R** using `meta`, `metafor`, and `dmetar` packages
 
 ---
-
-## 📦 Repository Contents
