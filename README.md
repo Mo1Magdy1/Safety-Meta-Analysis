@@ -1,6 +1,6 @@
 # 🧪 Safety profile of glucokinase activator AZD1656: systematic review and meta-analysis of 23 randomised trials in diabetic and healthy volunteers with relevance to immunomodulatory therapy
 
-<img width="90%" height="383" alt="image" src="https://github.com/user-attachments/assets/1b480205-2791-478e-8640-255cb3d13b41" />
+<img width="90%" height="600" alt="image" src="https://github.com/user-attachments/assets/1b480205-2791-478e-8640-255cb3d13b41" />
 
 ---
 
